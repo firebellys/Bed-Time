@@ -1,0 +1,73 @@
+﻿<phone:PhoneApplicationPage x:Class="BedTime.About" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+							xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+							xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+							xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+							xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+							xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+							FontFamily="{StaticResource PhoneFontFamilyNormal}" FontSize="{StaticResource PhoneFontSizeNormal}"
+							Foreground="{StaticResource PhoneForegroundBrush}" SupportedOrientations="Portrait" Orientation="Portrait"
+							mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480" shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot">
+        <Grid.Background>
+            <ImageBrush ImageSource="Background.png" Opacity=".20"></ImageBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <StackPanel>
+                <TextBlock Margin="0,35,0,49" CacheMode="BitmapCache" x:Name="TitleBlock" Text="Bed Time" FontSize="70"
+				   Foreground="#84caff"></TextBlock>
+                <TextBlock Style="{StaticResource PhoneTextSubtleStyle}">by Firebelly Studios</TextBlock>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                    <!--<TextBlock Style="{StaticResource PhoneTextSubtleStyle}" Text="Version: "></TextBlock>-->
+
+                    <TextBlock x:Name="VersionID" Style="{StaticResource PhoneTextSubtleStyle}" x:FieldModifier="private"></TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                    <TextBlock Margin="12,0,43,0" Style="{StaticResource PhoneTextSubtleStyle}" Text="Web:"></TextBlock>
+                    <HyperlinkButton Content="http://firebelly-studios.com" FontSize="22" Click="WebClick" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                    <TextBlock Style="{StaticResource PhoneTextSubtleStyle}" Text="Support:"></TextBlock>
+                    <HyperlinkButton Content="firebelly@gmail.com" FontSize="22" Click="EmailClick" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                    <TextBlock Margin="12,0,17,0" Style="{StaticResource PhoneTextSubtleStyle}" Text="Twitter: "></TextBlock>
+                    <HyperlinkButton Content="@firebellys" FontSize="22" Click="TwitterClick" />
+                </StackPanel>
+                <TextBlock TextWrapping="Wrap" Margin="12,0,0,0">
+		  Copyright Firebelly Studios © 2012
+                </TextBlock>
+                <TextBlock TextWrapping="Wrap" Margin="12,0,0,214">
+		  Bed Time is an alarm clock based on sleep cycles. It tells you when to wake up or when to go to bed. Music is by Kubbi, found on SoundCloud, Bandcamp and Facebook. Original idea from Sleepyti.me by darkcode. Copy edits by Florence Ion.
+                </TextBlock>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Width="260" Content="Privacy Policy" Click="PrivacyClick"></Button>
+                    <Button Width="203" Content="Rate" Click="HelpClick"></Button>
+
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Grid>
+
+    <!--Sample code showing usage of ApplicationBar-->
+    <!--<phone:PhoneApplicationPage.ApplicationBar>
+		<shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+			<shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
+			<shell:ApplicationBarIconButton IconUri="/Images/appbar_button2.png" Text="Button 2"/>
+			<shell:ApplicationBar.MenuItems>
+				<shell:ApplicationBarMenuItem Text="MenuItem 1"/>
+				<shell:ApplicationBarMenuItem Text="MenuItem 2"/>
+			</shell:ApplicationBar.MenuItems>
+		</shell:ApplicationBar>
+	</phone:PhoneApplicationPage.ApplicationBar>-->
+
+</phone:PhoneApplicationPage>
