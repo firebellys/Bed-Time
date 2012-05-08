@@ -1,8 +1,12 @@
 ﻿using System;
+using System.IO.IsolatedStorage;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Microsoft.Phone.Scheduler;
+using Microsoft.Phone.Shell;
 using Telerik.Windows.Controls;
 
 namespace BedTime
@@ -15,23 +19,70 @@ namespace BedTime
         public MainPage()
         {
             InitializeComponent();
+            FireTile("No alarm set.");
             Loaded += LoadTimes;
+        }
+
+        private void FireTile(String text)
+        {
+            var uri = new Uri("Images/173x173.png", UriKind.Relative);
+            var sri = Application.GetResourceStream(uri);
+
+            var uriBack = new Uri("Images/173x173Back.png", UriKind.Relative);
+            var sriBack = Application.GetResourceStream(uriBack);
+
+
+            var wbm = new WriteableBitmap(173, 173);
+            wbm.SetSource(sri.Stream);
+            var wbmBack = new WriteableBitmap(173, 173);
+            wbmBack.SetSource(sriBack.Stream);
+
+
+            using (
+                var stream =
+                    IsolatedStorageFile.GetUserStoreForApplication().CreateFile(
+                        "/Shared/ShellContent/tile.png"))
+            {
+                wbm.SaveJpeg(stream, 173, 173, 0, 100);
+            }
+
+            using (
+    var streamBack =
+        IsolatedStorageFile.GetUserStoreForApplication().CreateFile(
+            "/Shared/ShellContent/tileBack.png"))
+            {
+                wbmBack.SaveJpeg(streamBack, 173, 173, 0, 100);
+            }
+
+
+            var currentTiles = ShellTile.ActiveTiles.First();
+            var tilesUpdatedData = new StandardTileData
+            {
+                BackBackgroundImage =
+                    new Uri("isostore:/Shared/ShellContent/tileBack.png",
+                            UriKind.Absolute),
+                BackContent = text,
+                BackTitle = ""
+            };
+            if (currentTiles != null) currentTiles.Update(tilesUpdatedData);
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             Statusfield.Text = CheckForAlarms();
         }
-        private static string CheckForAlarms()
+        private string CheckForAlarms()
         {
             var tempstring = "";
             var temp = ScheduledActionService.Find("Bed Time Wake Up ID");
             if (temp != null)
             {
+                FireTile("Alarm @ " + temp.BeginTime.ToShortTimeString());
                 tempstring = "Alarm set to: " + temp.BeginTime.ToShortDateString() + " at " + temp.BeginTime.ToShortTimeString();
             }
             else
             {
                 tempstring = "No alarm set.";
+                FireTile("No alarm set.");
             }
             return tempstring;
         }
@@ -77,10 +128,13 @@ namespace BedTime
                 {
                     ScheduledActionService.Remove("Bed Time Wake Up ID");
                     ScheduledActionService.Add(alarm);
+                    FireTile("Alarm @ " + alarm.BeginTime.ToShortTimeString());
                 }
                 else
                 {
+
                     ScheduledActionService.Add(alarm);
+                    FireTile("Alarm @ " + alarm.BeginTime.ToShortTimeString());
                 }
 
                 MessageBox.Show("Alarm set for: " + alarm.BeginTime.ToShortDateString() + " at " +
@@ -114,11 +168,17 @@ namespace BedTime
 
         private void ClearClick(object sender, RoutedEventArgs e)
         {
+            ScheduledAction tempReminder = ScheduledActionService.Find("Go to sleep Reminder ID");
+            if (tempReminder != null)
+            {
+                ScheduledActionService.Remove("Go to sleep Reminder ID");
+            }
             ScheduledAction temp = ScheduledActionService.Find("Bed Time Wake Up ID");
             if (temp != null)
             {
                 ScheduledActionService.Remove("Bed Time Wake Up ID");
                 MessageBox.Show("Alarm cleared.");
+                FireTile("No alarm set.");
             }
             else
             {

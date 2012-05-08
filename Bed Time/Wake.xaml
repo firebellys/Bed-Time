@@ -35,20 +35,31 @@
             </StackPanel>
 
             <StackPanel Margin="0,12,0,0" Height="514" VerticalAlignment="Center">
-               
-          
+
+
                 <StackPanel x:Name="PickBySleepTimePanel" Visibility="Visible">
                     <TextBlock Margin="0,12,0,0" 
                                    Foreground="#092847"
                                    TextWrapping="Wrap"  
-                                   Text="Select what time you are planning on waking up and we'll tell you the ideal time to get into bed (be sure to factor in 14 minutes to fall asleep)."></TextBlock>
-                    <telerik:RadTimePicker x:Name="timePicker" ValueChanged="TimePickerValueChanged" />
-                    <Button Visibility="Collapsed" Background="#666666" x:Name="sleepButton1" Content="."></Button>
-                    <Button Visibility="Collapsed" Background="#666666" x:Name="sleepButton2" Content="." ></Button>
-                    <Button Visibility="Collapsed" Background="#666666" x:Name="sleepButton3" Content="." ></Button>
-                    <Button Visibility="Collapsed" Background="#666666" x:Name="sleepButton4" Content="." ></Button>
-                    <Button Visibility="Collapsed" Background="#666666" x:Name="sleepButton5" Content="." ></Button>
-                    <TextBlock Margin="0,0,0,0"
+                                   Text="Select what time you are planning on waking up and we'll tell you the ideal time to get into bed. "></TextBlock>
+                    <StackPanel Orientation="Horizontal">
+                        <telerik:RadTimePicker Width="250" x:Name="timePicker" ValueChanged="TimePickerValueChanged" />
+
+                        <TextBlock Margin="12,12,0,12" 
+                                   
+                                   Foreground="#092847"
+                                   TextWrapping="Wrap"  
+                                   VerticalAlignment="Center"
+                                   Text="Repeat Daily?"></TextBlock>
+                        <CheckBox x:Name="TheCheckBox"></CheckBox>
+                    </StackPanel>
+
+                    <Button Visibility="Collapsed" Background="#666666" x:Name="sleepButton5" Content="." Click="TimeClick" ></Button>
+                    <Button Visibility="Collapsed" Background="#99CC66" x:Name="sleepButton4" Content="." Click="TimeClick" ></Button>
+                    <Button Visibility="Collapsed" Background="#00CC33" x:Name="sleepButton3" Content="." Click="TimeClick" ></Button>
+                    <Button Visibility="Collapsed" Background="#99CC66" x:Name="sleepButton2" Content="." Click="TimeClick" ></Button>
+                    <Button Visibility="Collapsed" Background="#666666" x:Name="sleepButton1" Content="." Click="TimeClick"></Button>
+                    <!--<TextBlock Margin="0,0,0,0"
                                    x:Name="Statusfield2"
                                    FontSize="22"
                                    FontFamily="Segoe WP"
@@ -57,7 +68,7 @@
                                    Foreground="#092847"
                                    TextWrapping="Wrap"  
                                    Text="No alarm set."
-                                   ></TextBlock>
+                                   ></TextBlock>-->
 
                 </StackPanel>
 

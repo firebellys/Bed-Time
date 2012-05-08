@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Windows;
 using Microsoft.Phone.Tasks;
 
@@ -9,6 +10,7 @@ namespace BedTime
         public About()
         {
             InitializeComponent();
+            Loaded += AboutLoaded;
         }
 
         /// <summary>
@@ -21,7 +23,18 @@ namespace BedTime
             MessageBox.Show(
                 "This app does not store any information. It just rings after some time.");
         }
+        private void AboutLoaded(object sender, RoutedEventArgs e)
+        {
+            //if (!IsolatedStorageSettings.ApplicationSettings.TryGetValue("LocalSettings", out _localSettings))
+            //{
+            //    _localSettings = new CurrentSettings();
+            //}
+            var assembly = Assembly.GetExecutingAssembly();
+            var myassemblyName = new AssemblyName(assembly.FullName);
+            VersionNumber.Text = myassemblyName.Version.Major + "." + myassemblyName.Version.Minor + "." +
+                             myassemblyName.Version.Build;
 
+        }
         /// <summary>
         /// 
         /// </summary>

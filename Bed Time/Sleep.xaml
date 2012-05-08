@@ -34,23 +34,23 @@
             </StackPanel>
 
             <StackPanel Margin="0,12,0,0" Height="514" VerticalAlignment="Center">
-            
+
                 <StackPanel x:Name="PickByWakeTimePanel" Visibility="Collapsed">
                     <TextBlock Margin="0,12,0,0" 
                                    Foreground="#092847"
                                    TextWrapping="Wrap"  
                                    Text="Select what time you want to wake up if you are going to bed right now. This includes 14 minutes to allow you to fall asleep."></TextBlock>
-                    <Button Background="#666666" x:Name="timeButton1" Content="." Click="TimeButtonClick"></Button>
-                    <Button Background="#666666" x:Name="timeButton2" Content="." Click="TimeButtonClick"></Button>
-                    <Button Background="#666666" x:Name="timeButton3" Content="." Click="TimeButtonClick"></Button>
-                    <Button Background="#666666" x:Name="timeButton4" Content="." Click="TimeButtonClick"></Button>
-                    <Button Background="#99CC66" x:Name="timeButton5" Content="." Click="TimeButtonClick"></Button>
-                    <Button Background="#00CC33" x:Name="timeButton6" Content="." Click="TimeButtonClick"></Button>
                     <Button Background="#00CC33" x:Name="timeButton7" Content="." Click="TimeButtonClick"></Button>
+                    <Button Background="#00CC33" x:Name="timeButton6" Content="." Click="TimeButtonClick"></Button>
+                    <Button Background="#99CC66" x:Name="timeButton5" Content="." Click="TimeButtonClick"></Button>
+                    <Button Background="#666666" x:Name="timeButton4" Content="." Click="TimeButtonClick"></Button>
+                    <Button Background="#666666" x:Name="timeButton3" Content="." Click="TimeButtonClick"></Button>
+                    <Button Background="#666666" x:Name="timeButton2" Content="." Click="TimeButtonClick"></Button>
+                    <Button Background="#666666" x:Name="timeButton1" Content="." Click="TimeButtonClick"></Button>
                     <Button Visibility="Collapsed" Background="red" x:Name="timeButton8" Content="" Click="TimeButtonClick"></Button>
 
                 </StackPanel>
-             
+
 
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Center">
@@ -61,6 +61,6 @@
 
         </StackPanel>
     </Grid>
-  
+
 
 </phone:PhoneApplicationPage>

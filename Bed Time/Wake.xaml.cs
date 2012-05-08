@@ -1,9 +1,14 @@
 ﻿using System;
+using System.IO.IsolatedStorage;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Windows.Resources;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Scheduler;
+using Microsoft.Phone.Shell;
 using Telerik.Windows.Controls;
 
 namespace BedTime
@@ -17,33 +22,86 @@ namespace BedTime
             InitializeComponent();
         }
 
-        private static string CheckForAlarms()
+        private void FireTile(String text)
         {
-            string tempstring = "";
-            ScheduledAction temp = ScheduledActionService.Find("Bed Time Wake Up ID");
+            var uri = new Uri("Images/173x173.png", UriKind.Relative);
+            StreamResourceInfo sri = Application.GetResourceStream(uri);
+
+            var uriBack = new Uri("Images/173x173Back.png", UriKind.Relative);
+            StreamResourceInfo sriBack = Application.GetResourceStream(uriBack);
+
+
+            var wbm = new WriteableBitmap(173, 173);
+            wbm.SetSource(sri.Stream);
+            var wbmBack = new WriteableBitmap(173, 173);
+            wbmBack.SetSource(sriBack.Stream);
+
+
+            using (
+                IsolatedStorageFileStream stream =
+                    IsolatedStorageFile.GetUserStoreForApplication().CreateFile(
+                        "/Shared/ShellContent/tile.png"))
+            {
+                wbm.SaveJpeg(stream, 173, 173, 0, 100);
+            }
+
+            using (
+                IsolatedStorageFileStream streamBack =
+                    IsolatedStorageFile.GetUserStoreForApplication().CreateFile(
+                        "/Shared/ShellContent/tileBack.png"))
+            {
+                wbmBack.SaveJpeg(streamBack, 173, 173, 0, 100);
+            }
+
+
+            ShellTile currentTiles = ShellTile.ActiveTiles.First();
+            var tilesUpdatedData = new StandardTileData
+                                       {
+                                           BackBackgroundImage =
+                                               new Uri("isostore:/Shared/ShellContent/tileBack.png",
+                                                       UriKind.Absolute),
+                                           BackContent = text,
+                                           BackTitle = ""
+                                       };
+            if (currentTiles != null) currentTiles.Update(tilesUpdatedData);
+        }
+
+        private string CheckForAlarms()
+        {
+            var tempstring = "";
+            var temp = ScheduledActionService.Find("Bed Time Wake Up ID");
             if (temp != null)
             {
+                FireTile("Alarm @ " + temp.BeginTime.ToShortDateString());
                 tempstring = "Alarm set to: " + temp.BeginTime.ToShortDateString() + " at " +
                              temp.BeginTime.ToShortTimeString();
             }
             else
             {
                 tempstring = "No alarm set.";
+                FireTile("No alarm set.");
             }
             return tempstring;
         }
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-
-        }
-        private void SetTimes()
-        {
-       
-        }
-
-        private void LoadTimes(object sender, RoutedEventArgs e)
-        {
-            SetTimes();
+            ScheduledAction temp = ScheduledActionService.Find("Go to sleep Reminder ID");
+            if (temp != null)
+            {
+                if (temp.IsScheduled == true)
+                {
+                    TheCheckBox.IsChecked = true;
+                }
+                else
+                {
+                    TheCheckBox.IsChecked = false;
+                }
+            }
+            else
+            {
+                TheCheckBox.IsChecked = false;
+            }
         }
 
         private void HandleAlarmSet(DateTime thetime)
@@ -55,6 +113,7 @@ namespace BedTime
                                     Content = "Wake Up",
                                     Sound = new Uri("Sounds/sleet.mp3", UriKind.RelativeOrAbsolute),
                                     BeginTime = thetime,
+                                    RecurrenceType = RecurrenceInterval.None,
                                 };
 
                 ScheduledAction temp = ScheduledActionService.Find("Bed Time Wake Up ID");
@@ -62,10 +121,12 @@ namespace BedTime
                 {
                     ScheduledActionService.Remove("Bed Time Wake Up ID");
                     ScheduledActionService.Add(alarm);
+                    FireTile("Alarm @ " + alarm.BeginTime.ToShortTimeString());
                 }
                 else
                 {
                     ScheduledActionService.Add(alarm);
+                    FireTile("Alarm @ " + alarm.BeginTime.ToShortTimeString());
                 }
 
                 MessageBox.Show("Alarm set for: " + alarm.BeginTime.ToShortDateString() + " at " +
@@ -77,16 +138,6 @@ namespace BedTime
             }
         }
 
-        private void TimeButtonClick(object sender, RoutedEventArgs e)
-        {
-            HandleAlarmSet(Convert.ToDateTime(((Button) e.OriginalSource).Content));
-            SetTimes();
-            refreshbutton.IsEnabled = true;
-            ToggleSelectPanel(Toggles.Open);
-            ToggleSleepPanel(Toggles.Close);
-            ToggleWakePanel(Toggles.Close);
-        }
-
         private void AboutClick(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new Uri("/About.xaml", UriKind.Relative));
@@ -94,16 +145,22 @@ namespace BedTime
 
         private void RefreshClick(object sender, RoutedEventArgs e)
         {
-            SetTimes();
         }
 
         private void ClearClick(object sender, RoutedEventArgs e)
         {
+
+            ScheduledAction tempReminder = ScheduledActionService.Find("Go to sleep Reminder ID");
+            if (tempReminder != null)
+            {
+                ScheduledActionService.Remove("Go to sleep Reminder ID");
+            }
             ScheduledAction temp = ScheduledActionService.Find("Bed Time Wake Up ID");
             if (temp != null)
             {
                 ScheduledActionService.Remove("Bed Time Wake Up ID");
                 MessageBox.Show("Alarm cleared.");
+                FireTile("No alarm set.");
             }
             else
             {
@@ -113,44 +170,13 @@ namespace BedTime
             sleepButton2.Visibility = Visibility.Collapsed;
             sleepButton3.Visibility = Visibility.Collapsed;
             sleepButton4.Visibility = Visibility.Collapsed;
+            sleepButton5.Visibility = Visibility.Collapsed;
             Dispatcher.BeginInvoke(() => { timePicker.Value = null; });
 
-            Statusfield2.Text = CheckForAlarms();
+            //Statusfield2.Text = CheckForAlarms();
             refreshbutton.IsEnabled = true;
-            //ToggleSelectPanel(Toggles.Open);
-            //ToggleSleepPanel(Toggles.Close);
-            //ToggleWakePanel(Toggles.Close);
-        }
 
-        private void SelectByWakeButtonClick(object sender, RoutedEventArgs e)
-        {
-            refreshbutton.IsEnabled = true;
-            ToggleSelectPanel(Toggles.Close);
-            ToggleSleepPanel(Toggles.Close);
-            ToggleWakePanel(Toggles.Open);
-        }
-
-        private void SelectBySleepButtonClick(object sender, RoutedEventArgs e)
-        {
-            refreshbutton.IsEnabled = false;
-            ToggleSelectPanel(Toggles.Close);
-            ToggleSleepPanel(Toggles.Open);
-            ToggleWakePanel(Toggles.Close);
-        }
-
-        private void ToggleSelectPanel(Toggles toggle)
-        {
-            //SelectButtonsPanel.Visibility = toggle == Toggles.Open ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        private void ToggleWakePanel(Toggles toggle)
-        {
-            //PickByWakeTimePanel.Visibility = toggle == Toggles.Open ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        private void ToggleSleepPanel(Toggles toggle)
-        {
-            PickBySleepTimePanel.Visibility = toggle == Toggles.Open ? Visibility.Visible : Visibility.Collapsed;
+            NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
         }
 
         private void TimePickerValueChanged(object sender, ValueChangedEventArgs<object> args)
@@ -159,7 +185,7 @@ namespace BedTime
             {
                 _wakeUpTime = Convert.ToDateTime(args.NewValue);
 
-                if (_wakeUpTime > DateTime.Now.Subtract(TimeSpan.FromMinutes(120)) ||
+                if (_wakeUpTime > DateTime.Now.Add(TimeSpan.FromMinutes(120)) ||
                     _wakeUpTime < DateTime.Now.Subtract(TimeSpan.FromSeconds(30)))
                 {
                     if (_wakeUpTime < DateTime.Now.Subtract(TimeSpan.FromSeconds(30)))
@@ -176,11 +202,13 @@ namespace BedTime
                     sleepButton2.Visibility = Visibility.Visible;
                     sleepButton3.Visibility = Visibility.Visible;
                     sleepButton4.Visibility = Visibility.Visible;
+                    sleepButton5.Visibility = Visibility.Visible;
                     HandleAlarmSet(_wakeUpTime);
-                    Statusfield2.Text = CheckForAlarms();
+                    //Statusfield2.Text = CheckForAlarms();
                 }
                 else
                 {
+                    Dispatcher.BeginInvoke(() => { timePicker.Value = null; });
                     MessageBox.Show("Please set time ahead at least two hours.");
                 }
             }
@@ -195,5 +223,48 @@ namespace BedTime
         }
 
         #endregion
+
+        private void TimeClick(object sender, RoutedEventArgs e)
+        {
+            var reminder = new Reminder("Go to sleep Reminder ID")
+                               {
+                                   Title = "Bed Time!",
+                                   Content = "You should head to bed soon. You should try and be asleep in 30 minutes.",
+                                   BeginTime = Convert.ToDateTime(((Button)e.OriginalSource).Content).Subtract(TimeSpan.FromMinutes(14)),
+                                   RecurrenceType = RecurrenceInterval.None,
+                               };
+
+            //reminder.ExpirationTime = expirationTime;
+            if (TheCheckBox.IsChecked != null && TheCheckBox.IsChecked == true)
+            {
+                reminder.RecurrenceType = RecurrenceInterval.Daily;
+            }
+            else
+            {
+                reminder.RecurrenceType = RecurrenceInterval.None;
+            }
+            //reminder.NavigationUri = navigationUri;
+            ScheduledAction temp = ScheduledActionService.Find("Go to sleep Reminder ID");
+            if (temp != null)
+            {
+                ScheduledActionService.Remove("Go to sleep Reminder ID");
+                ScheduledActionService.Add(reminder);
+                //FireTile("Bed time reminder set @ " + reminder.BeginTime.ToShortTimeString());
+            }
+            else
+            {
+                ScheduledActionService.Add(reminder);
+                //FireTile("Bed time reminder set @ " + reminder.BeginTime.ToShortTimeString());
+            }
+            MessageBox.Show("Reminder set for: " + reminder.BeginTime.ToShortDateString() + " at " +
+                    reminder.BeginTime.ToShortTimeString());
+            NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+
+            // Register the reminder with the system.
+            //ScheduledActionService.Add(reminder);
+
+
+            //HandleAlarmSet(Convert.ToDateTime(((Button)e.OriginalSource).Content));
+        }
     }
 }

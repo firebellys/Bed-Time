@@ -23,8 +23,20 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <StackPanel>
-                <TextBlock Margin="0,35,0,49" CacheMode="BitmapCache" x:Name="TitleBlock" Text="Bed Time" FontSize="70"
-				   Foreground="#84caff"></TextBlock>
+                <StackPanel Margin="0" Height="185">
+                    <TextBlock Margin="0,20,0,0" FontSize="56" FontFamily="Segoe WP" FontStyle="Normal" TextWrapping="Wrap"
+                    Foreground="#84caff"
+                   Text="Bed Time....."
+                   Style="{StaticResource PhoneTextNormalStyle}" />
+                    <TextBlock Margin="0,00,0,0" FontSize="26" FontFamily="Segoe WP" FontStyle="Normal" TextWrapping="Wrap"
+                    Foreground="#84caff"
+                   Text="The sleep cycle alarm clock"
+                                  Style="{StaticResource PhoneTextNormalStyle}" />
+                    <!--<TextBlock Margin="0,0,0,12" Height="118" FontSize="22" FontFamily="Segoe WP" FontStyle="Normal" TextWrapping="Wrap"
+                   x:Name="ApplicationTitle" Foreground="#84caff"
+                   Text="Each sleep cycle occurs over 90 minute intervals, with 14 minutes leeway to cover the time that it takes the average person to fall asleep."
+                   Style="{StaticResource PhoneTextNormalStyle}" />-->
+                </StackPanel>
                 <TextBlock Style="{StaticResource PhoneTextSubtleStyle}">by Firebelly Studios</TextBlock>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                     <!--<TextBlock Style="{StaticResource PhoneTextSubtleStyle}" Text="Version: "></TextBlock>-->
@@ -43,10 +55,16 @@
                     <TextBlock Margin="12,0,17,0" Style="{StaticResource PhoneTextSubtleStyle}" Text="Twitter: "></TextBlock>
                     <HyperlinkButton Content="@firebellys" FontSize="22" Click="TwitterClick" />
                 </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                    <TextBlock Margin="12,0,12,0" Style="{StaticResource PhoneTextSubtleStyle}" Text="Version: "></TextBlock>
+                    <TextBlock TextWrapping="Wrap" x:Name="VersionNumber" Margin="12,0,0,0">
+		  N/A
+                    </TextBlock>
+                </StackPanel>
                 <TextBlock TextWrapping="Wrap" Margin="12,0,0,0">
 		  Copyright Firebelly Studios © 2012
                 </TextBlock>
-                <TextBlock TextWrapping="Wrap" Margin="12,0,0,214">
+                <TextBlock TextWrapping="Wrap" Margin="12,0,0,180">
 		  Bed Time is an alarm clock based on sleep cycles. It tells you when to wake up or when to go to bed. Music is by Kubbi, found on SoundCloud, Bandcamp and Facebook. Original idea from Sleepyti.me by darkcode. Copy edits by Florence Ion.
                 </TextBlock>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

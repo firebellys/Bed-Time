@@ -115,6 +115,10 @@
     </Content>
     <Resource Include="200x200.png" />
     <Resource Include="99x99.png" />
+    <Content Include="Images\173x173.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\173x173Back.png" />
     <Content Include="Images\DateTimePickerCancel.png" />
     <Content Include="Images\DateTimePickerOK.png" />
     <Content Include="Background.png">
